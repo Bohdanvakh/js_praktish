@@ -39,44 +39,44 @@ console.log(newDog.breed);
 // Example 3: real case of using super
 // in this case we have item and taxes that uses super to get basic persent of tax
 
-class BasicImportTax {
-    constructor(persent) {
-        this.persent = 0.06;
-    }
-}
-
-class CarTax extends BasicImportTax {
-    constructor(persent, additionalTaxPersent) {
-        super(persent);
-        this.additionalTaxPersent = 0.18; // 15%
+class BaseTax {
+    constructor(basePersent) {
+        this.basePersent = basePersent;
     }
 
     totalTax() {
-        return this.persent + this.additionalTaxPersent; // 21%
+        return this.basePersent;
     }
 }
 
-class FoodTax extends BasicImportTax {
-    constructor(persent, additionalTaxPersent) {
-        super(persent);
-        this.additionalTaxPersent = 0.05; // 5%
+class ImportTax extends BaseTax {
+    constructor(additionalTaxPersent) {
+        super(0.06); // 6%
+        this.additionalTaxPersent = additionalTaxPersent;
     }
 
     totalTax() {
-        return this.persent + this.additionalTaxPersent; // 9%
+        return super.totalTax() + this.additionalTaxPersent;
     }
 }
 
-class BasicDomesticTax {
-    constructor(persent) {
-        this.persent = 0.18; // 18%
-    }
-
-    totalTax() {
-        return this.persent;
+class CarImportTax extends ImportTax {
+    constructor() {
+        super(0.18); // additional tax for cars
     }
 }
 
+class FoodImportTax extends ImportTax {
+    constructor() {
+        super(0.05); // additional tax for food
+    }
+}
+
+class DomesticTax extends BaseTax {
+    constructor() {
+        super(0.18); // 18%
+    }
+}
 
 class Item {
     constructor(type, name, price) {
@@ -92,8 +92,8 @@ class Item {
 }
 
 const car = new Item('domestic', 'car', 11000);
-const carTax = new CarTax();
-const domesticTax = new BasicDomesticTax();
+const carImportTax = new CarImportTax();
+const domesticTax = new DomesticTax();
 
-console.log(car.getPriceAfterTaxes(carTax));
+console.log(car.getPriceAfterTaxes(carImportTax));
 console.log(car.getPriceAfterTaxes(domesticTax));
